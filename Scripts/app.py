@@ -50,11 +50,9 @@ DEVICE_MAP = {
 CONSIDER = set(["dog", "person", "car", "cat", "bird", "bicycle", "motorbike", "truck"])
 streaming_devices = []
 
-# create Flask app
+# create Flask app and run a socket server on it
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'secret!'
-
-# create socket server
+app.config['SECRET_KEY'] = '0H,i-am-so-s3cret!'
 socket = SocketIO(app, cors_allowed_origins='*', logger=False, engineio_logger=False)
 
 # create function to emit a socket event 
