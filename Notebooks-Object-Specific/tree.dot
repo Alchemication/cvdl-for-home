@@ -1,0 +1,16 @@
+digraph Tree {
+node [shape=box] ;
+0 [label="hour <= 5.5\nmse = 3.888\nsamples = 100\nvalue = 1.18"] ;
+1 [label="cur__precipProbability <= 0.315\nmse = 0.038\nsamples = 25\nvalue = 0.04"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label="mse = 0.0\nsamples = 23\nvalue = 0.0"] ;
+1 -> 2 ;
+3 [label="mse = 0.25\nsamples = 2\nvalue = 0.5"] ;
+1 -> 3 ;
+4 [label="hour <= 17.5\nmse = 4.593\nsamples = 75\nvalue = 1.56"] ;
+0 -> 4 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+5 [label="mse = 5.746\nsamples = 45\nvalue = 2.378"] ;
+4 -> 5 ;
+6 [label="mse = 0.356\nsamples = 30\nvalue = 0.333"] ;
+4 -> 6 ;
+}
