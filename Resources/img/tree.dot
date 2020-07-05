@@ -1,0 +1,28 @@
+digraph Tree {
+node [shape=box] ;
+0 [label="cur__uvIndex <= 0.5\nmse = 3.791\nsamples = 300\nvalue = 1.207"] ;
+1 [label="hour <= 6.5\nmse = 2.379\nsamples = 250\nvalue = 0.868"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label="hour <= 4.5\nmse = 0.158\nsamples = 81\nvalue = 0.123"] ;
+1 -> 2 ;
+3 [label="mse = 0.017\nsamples = 59\nvalue = 0.017"] ;
+2 -> 3 ;
+4 [label="mse = 0.424\nsamples = 22\nvalue = 0.409"] ;
+2 -> 4 ;
+5 [label="hour <= 17.5\nmse = 3.05\nsamples = 169\nvalue = 1.225"] ;
+1 -> 5 ;
+6 [label="mse = 3.988\nsamples = 85\nvalue = 2.012"] ;
+5 -> 6 ;
+7 [label="mse = 0.84\nsamples = 84\nvalue = 0.429"] ;
+5 -> 7 ;
+8 [label="cur__apparentTemperature <= 2.99\nmse = 7.41\nsamples = 50\nvalue = 2.9"] ;
+0 -> 8 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+9 [label="mse = 10.64\nsamples = 5\nvalue = 5.6"] ;
+8 -> 9 ;
+10 [label="hour <= 10.5\nmse = 6.151\nsamples = 45\nvalue = 2.6"] ;
+8 -> 10 ;
+11 [label="mse = 0.24\nsamples = 5\nvalue = 0.4"] ;
+10 -> 11 ;
+12 [label="mse = 6.209\nsamples = 40\nvalue = 2.875"] ;
+10 -> 12 ;
+}
