@@ -6,7 +6,8 @@ Computer Vision and Deep Learning for Anomaly Detection in Home Monitoring
 - Execute convert script (takes ~20 seconds)
 
 ```bash
-cd ~/Laboratory/cvdl-for-home/Scripts
+git clone https://github.com/Alchemication/cvdl-for-home.git
+cd ./cvdl-for-home/Scripts
 ./generate_pdf.sh
 ```
 
