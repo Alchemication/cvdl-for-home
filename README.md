@@ -3,16 +3,19 @@ Computer Vision and Deep Learning for Anomaly Detection in Home Monitoring
 
 ### Instructions to convert chapters to a single pdf:
 
-- Execute convert script (takes ~20 seconds)
-
+- Make sure you have the project cloned
 ```bash
 git clone https://github.com/Alchemication/cvdl-for-home.git
 cd ./cvdl-for-home/Scripts
+```
+- Update `BASE_PATH` variable in *generate_pdf.sh* file to point to local folder
+- Update `\bibliography` path in *thesis-format.tplx* file to point to local folder
+- Execute convert script (takes ~20 seconds)
+```bash
 ./generate_pdf.sh
 ```
 
 This will export a single *Thesis.ipynb* and *Thesis.pdf* files into a *Merged* folder
-
 
 ### First time setup
 
@@ -22,25 +25,14 @@ In order to successfully execute the shell script above, this one-time setup nee
 
 ```python
 c = get_config()
-c.TemplateExporter.template_path = ['.', "~/.jupyter" ]
-c.LatexExporter.template_path = ['.', "~/.jupyter"]
 c.TemplateExporter.exclude_input_prompt = False # The default
 c.PDFExporter.exclude_input_prompt = True
 ```
 
-- Create template file ~/.jupyter/hidecode.tplx:
+### Citations
 
+All citations are in the *citations.bib* file in the root of the project. Reference them from Notebooks as:
+```html
+<cite data-cite="granger2013">(Granger, 2013)</cite>
 ```
-((*- extends 'article.tplx' -*))
-
-((* block input_group *))
-    ((*- if cell.metadata.get('nbconvert', {}).get('show_code', False) -*)) % hides code
-            ((( super() )))
-    ((*- endif -*))
-((* endblock input_group *))
-
-((* block commands *))
-    \setcounter{secnumdepth}{0} % Turns off numbering for sections
-    ((( super() )))
-((* endblock commands *))
-```
+, where `granger2013` is a key in the *.bib* file

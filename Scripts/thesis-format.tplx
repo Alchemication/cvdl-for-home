@@ -1,0 +1,17 @@
+((*- extends 'article.tplx' -*))
+
+((* block input_group *))
+    ((*- if cell.metadata.get('nbconvert', {}).get('show_code', False) -*)) % hides code
+            ((( super() )))
+    ((*- endif -*))
+((* endblock input_group *))
+
+((* block commands *))
+    \setcounter{secnumdepth}{0} % Turns off numbering for sections
+    ((( super() )))
+((* endblock commands *))
+
+((* block bibliography *))
+    \bibliographystyle{unsrt}
+    \bibliography{/home/adamsky/Laboratory/cvdl-for-home/citations}
+((* endblock bibliography *))
