@@ -15,6 +15,7 @@ from datetime import datetime, timedelta
 from tqdm import tqdm
 import requests
 import os
+import json
 
 
 # Define constants to use
@@ -22,7 +23,7 @@ DATASETS_PATH = '../Datasets'
 OBJECT_CLASSES = ['person', 'vehicle']
 PICKLED_SCALER_FILE = 'final_scaler__%%OBJECT_NAME%%.pickle'
 PICKLED_MODEL_FILE = 'final_model__%%OBJECT_NAME%%.pickle'
-PREDICTIONS_FILE = 'final_predictions__%%OBJECT_NAME%%.csv'
+PREDICTIONS_FILE = 'final_predictions__%%OBJECT_NAME%%.parquet'
 N_SAMPLES = 2500  # how many simulations to execute in a Poisson process
 PROBA_THRESH = 0.05  # reject probabilities below this threshold
 
@@ -38,12 +39,12 @@ humidity, windSpeed, windGust, windBearing, cloudCover, uvIndex, visibility""".s
 daily_keys = list(map(str.strip, """summary, sunriseTime, sunsetTime, temperatureHigh, temperatureLow""".split(',')))
 
 
-def make_ts(year, month, day, hour, minute, second=0):
+def make_ts(year: int, month: int, day: int, hour: int, minute: int, second: int = 0) -> int:
     return int(datetime(year, month, day, hour, minute, second).timestamp())
 
 
 # pull most recent weather data for all hours
-def make_api_url(ts):
+def make_api_url(ts: int) -> str:
     return f'{API_BASE_URL}/{API_KEY}/{LAT},{LONG},{ts}?exclude=hourly,flags,minutely&units=ca'
 
 
@@ -180,13 +181,11 @@ def predict(n_days: int = 3) -> None:
 
             # filter out weak probabilities
             numbers_filtered = numbers[probabilities > PROBA_THRESH]
-            counts_filtered = counts[probabilities > PROBA_THRESH]
             probabilities_filtered = probabilities[probabilities > PROBA_THRESH]
-            predictions_probas.append({
-                'numbers': numbers_filtered,
-                'counts': counts_filtered,
-                'probas': probabilities_filtered,
-            })
+            predictions_probas.append(json.dumps({
+                'counts': numbers_filtered.tolist(),
+                'probas': probabilities_filtered.tolist(),
+            }))
 
         # create a copy of X with added predictions
         X_cp = X.copy()
@@ -194,10 +193,13 @@ def predict(n_days: int = 3) -> None:
         X_cp['expected_count'] = expected_counts
         X_cp['pred_proba'] = predictions_probas
 
-        # export to csv (for now), ideally this should be persisted
-        # in the DB, so the results can be analyzed later on
+        # export to parquet (for now), ideally this should be persisted
+        # in the DB, so the results can be analyzed later on,
+        # parquet is a good choice, as it keeps the data types,
+        # and pred_proba column contains Python dictionaries
         logging.info(f'Saving probabilities for {ob_class}')
-        X_cp.to_csv(f'{DATASETS_PATH}/{PREDICTIONS_FILE.replace("%%OBJECT_NAME%%", ob_class)}', index=False)
+        X_cp.to_parquet(f'{DATASETS_PATH}/{PREDICTIONS_FILE.replace("%%OBJECT_NAME%%", ob_class)}',
+                        index=False)
 
 
 if __name__ == '__main__':
