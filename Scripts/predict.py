@@ -80,7 +80,7 @@ def predict(n_days: int = 3) -> None:
         logging.info(f'Using cached weather file {cached_filename}')
         weather_df = pd.read_csv(cached_filename)
     else:
-        logging.info(f'Pulling weather data from API')
+        logging.info(f'Pulling weather data from Dark Sky API for {n_days} day(s)')
 
         # pull weather data for each hour from API
         dark_sky = []
@@ -204,5 +204,5 @@ def predict(n_days: int = 3) -> None:
 
 if __name__ == '__main__':
     logging.basicConfig(format="%(asctime)s.%(msecs)03f %(levelname)s %(message)s",
-                        level=logging.DEBUG, datefmt="%H:%M:%S")
+                        level=logging.INFO, datefmt="%H:%M:%S")
     predict()

@@ -28,7 +28,7 @@ OBJECT_CLASSES = ['person', 'vehicle']
 DOWNTIME_DATES = ['2020-01-13', '2020-01-14', '2020-02-28']
 PICKLED_SCALER_FILE = 'final_scaler__%%OBJECT_NAME%%.pickle'
 PICKLED_MODEL_FILE = 'final_model__%%OBJECT_NAME%%.pickle'
-RUN_CROSS_VAL = False
+RUN_CROSS_VAL = True
 
 
 def train() -> None:
@@ -101,7 +101,7 @@ def train() -> None:
             # run a cross validation and display results
             logging.info('Running cross validation')
 
-            kf = KFold(n_splits=5, shuffle=True)
+            kf = KFold(n_splits=3, shuffle=True)
             # Iterate over each train-test split and calculate scores
             mpds = []
             mses = []
