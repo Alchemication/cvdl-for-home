@@ -31,7 +31,7 @@ PICKLED_MODEL_FILE = 'final_model__%%OBJECT_NAME%%.pickle'
 RUN_CROSS_VAL = True
 
 
-def train() -> None:
+def main() -> None:
     """
     Create a model for each object class, currently using Gradient Boosting
     Decision Tree from sklearn, as it is accurate, fairly robust and fast
@@ -167,4 +167,4 @@ def train() -> None:
 if __name__ == '__main__':
     logging.basicConfig(format="%(asctime)s.%(msecs)03f %(levelname)s %(message)s",
                         level=logging.DEBUG, datefmt="%H:%M:%S")
-    train()
+    main()

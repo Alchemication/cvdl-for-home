@@ -24,8 +24,9 @@ OBJECT_CLASSES = ['person', 'vehicle']
 PICKLED_SCALER_FILE = 'final_scaler__%%OBJECT_NAME%%.pickle'
 PICKLED_MODEL_FILE = 'final_model__%%OBJECT_NAME%%.pickle'
 PREDICTIONS_FILE = 'final_predictions__%%OBJECT_NAME%%.parquet'
-N_SAMPLES = 2500  # how many simulations to execute in a Poisson process
+N_SAMPLES = 2000  # how many simulations to execute in a Poisson process
 PROBA_THRESH = 0.05  # reject probabilities below this threshold
+ANOMALY_RATE = 0.007  # when sampling from Poisson, use this quantile to detect anomalies
 
 # Define weather API parameters
 API_BASE_URL = 'https://api.darksky.net/forecast'
@@ -48,7 +49,7 @@ def make_api_url(ts: int) -> str:
     return f'{API_BASE_URL}/{API_KEY}/{LAT},{LONG},{ts}?exclude=hourly,flags,minutely&units=ca'
 
 
-def predict(n_days: int = 3) -> None:
+def main(n_days: int = 3) -> None:
     """
     Create predictions for the next N days (including today)
     (meaning hours remaining for today + extra 2 days)
@@ -162,6 +163,7 @@ def predict(n_days: int = 3) -> None:
         logging.info(f'Generating probabilities from predictions for {ob_class}')
         predictions_probas = []
         expected_counts = []
+        anomaly_thresholds = []
 
         # sample from Poisson probability distribution for each prediction,
         # the assumption is that predictions can be interpreted as the rates
@@ -184,14 +186,18 @@ def predict(n_days: int = 3) -> None:
             probabilities_filtered = probabilities[probabilities > PROBA_THRESH]
             predictions_probas.append(json.dumps({
                 'counts': numbers_filtered.tolist(),
-                'probas': probabilities_filtered.tolist(),
+                'probas': probabilities_filtered.tolist()
             }))
+
+            # calculate threshold for anomaly detection
+            anomaly_thresholds.append(np.quantile(samples, 1 - ANOMALY_RATE))
 
         # create a copy of X with added predictions
         X_cp = X.copy()
         X_cp['pred'] = predictions
         X_cp['expected_count'] = expected_counts
         X_cp['pred_proba'] = predictions_probas
+        X_cp['anom_thresh'] = anomaly_thresholds
 
         # export to parquet (for now), ideally this should be persisted
         # in the DB, so the results can be analyzed later on,
@@ -205,4 +211,4 @@ def predict(n_days: int = 3) -> None:
 if __name__ == '__main__':
     logging.basicConfig(format="%(asctime)s.%(msecs)03f %(levelname)s %(message)s",
                         level=logging.INFO, datefmt="%H:%M:%S")
-    predict()
+    main()
